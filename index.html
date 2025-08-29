@@ -9,10 +9,11 @@
     <!-- Google Fonts for Bengali -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siluri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Dynamic Print Style -->
     <style id="print-style-sheet"></style>
     <style>
+        /* Corrected Font Declaration */
         body {
             font-family: 'Hind Siliguri', sans-serif;
         }
@@ -30,42 +31,46 @@
             outline: 2px solid #3b82f6;
         }
         
-        /* GENERAL PRINT STYLES */
+        /* ROBUST PRINT STYLES FOR SINGLE PAGE FIT */
         @media print {
-            body {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-                font-size: 9.5pt;
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                font-size: 9pt; /* Slightly reduced base font size */
                 line-height: 1.2;
             }
             .no-print { display: none !important; }
             .page-container {
                 display: flex;
                 flex-direction: column;
-                height: 100%;
-                padding: 0.6cm !important;
+                height: 100%; /* Use full height of the print page */
+                padding: 0.5cm !important;
                 box-shadow: none !important;
                 border-radius: 0 !important;
+                box-sizing: border-box;
             }
              .main-content {
-                flex-grow: 1; /* This is the key change */
+                flex-grow: 1; /* Key change: Pushes footer to the bottom */
             }
             header, section, footer {
                 margin: 0 !important;
                 padding: 0 !important;
+                flex-shrink: 0; /* Prevents containers from shrinking */
             }
             h1, h2, h3, h4, p {
-                margin: 0 0 3px 0 !important;
+                margin: 0 0 2px 0 !important;
                 padding: 0 !important;
             }
-            h1 { font-size: 16pt !important; }
-            h2 { font-size: 12pt !important; }
-            h3, h4 { font-size: 11pt !important; }
-            header { margin-bottom: 8px !important; flex-shrink: 0; }
-            section + section { margin-top: 8px !important; }
+            h1 { font-size: 15pt !important; }
+            h2 { font-size: 11pt !important; }
+            h3, h4 { font-size: 10pt !important; }
+            header { margin-bottom: 5px !important; }
+            section + section { margin-top: 5px !important; }
             table, th, td {
                 border: 1px solid #000 !important;
                 padding: 1px 3px;
+                page-break-inside: avoid;
             }
             a { text-decoration: none; color: inherit; }
             [contenteditable="true"] {
@@ -73,7 +78,6 @@
                  background-color: transparent !important;
             }
             footer { 
-                flex-shrink: 0;
                 margin-top: auto !important; 
                 padding-top: 4px !important; 
                 border-top: 1px solid #ccc !important;
@@ -211,6 +215,7 @@
         // Update href attribute when website link is edited
         document.getElementById('website-link').addEventListener('blur', function() {
             let newUrl = this.innerText.trim();
+            // Prepend http:// if protocol is missing
             if (newUrl && !/^https?:\/\//i.test(newUrl)) {
                 this.href = 'http://' + newUrl;
             } else if (newUrl) {
