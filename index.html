@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" id="viewport-meta" content="width=device-width, initial-scale=1.0">
     <title>ক্লাস রুটিন জেনারেটর</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -43,7 +43,7 @@
                 box-sizing: border-box;
             }
             .main-content { overflow: hidden; }
-            header, section, footer { margin: 0 !important; padding: 0 !important; flex-shrink: 0; }
+            header, section, footer { margin: 0 !important; padding: 0 !important; }
             h1 { font-size: 15pt !important; } h2 { font-size: 11pt !important; } h3, h4 { font-size: 10pt !important; }
             header { margin-bottom: 8px !important; }
             table, th, td { 
@@ -155,7 +155,10 @@
 
         const toBengaliNumber = (num) => String(num).split('').map(digit => bengaliNumerals[parseInt(digit)]).join('');
 
+        let originalViewportContent = '';
+
         document.addEventListener('DOMContentLoaded', () => {
+            originalViewportContent = document.getElementById('viewport-meta').getAttribute('content');
             document.getElementById('year').textContent = new Date().getFullYear();
             document.getElementById('website-link').addEventListener('blur', (e) => {
                 let url = e.target.innerText.trim();
@@ -215,10 +218,7 @@
         function updateRowSubjectOptions(row) {
             const allSelectsInRow = row.querySelectorAll('.subject-select');
             const selectionCounts = new Map();
-            allSelectsInRow.forEach(s => {
-                if (s.value) selectionCounts.set(s.value, (selectionCounts.get(s.value) || 0) + 1);
-            });
-
+            allSelectsInRow.forEach(s => { if (s.value) selectionCounts.set(s.value, (selectionCounts.get(s.value) || 0) + 1); });
             allSelectsInRow.forEach(select => {
                 const currentSelection = select.value;
                 select.querySelectorAll('option').forEach(option => {
@@ -246,7 +246,6 @@
             const headerRow = table.querySelector('thead tr');
             const newPeriodNum = headerRow.cells.length;
             headerRow.insertAdjacentHTML('beforeend', `<th class="border p-1 font-semibold"><span contenteditable="true">${toBengaliNumber(newPeriodNum)}ম পিরিয়ড</span><br><span contenteditable="true" class="font-normal text-xs">(সময়)</span></th>`);
-            
             table.querySelectorAll('tbody tr').forEach(row => {
                 const cell = row.insertCell();
                 cell.className = 'border p-1 align-top';
@@ -259,9 +258,7 @@
         function removeColumn(tableId) {
              if (tableId !== 'routineTable') return;
              const table = document.getElementById(tableId);
-             if (table.querySelector('thead tr').cells.length <= 2) {
-                 alert('আপনি শেষ পিরিয়ডটি মুছতে পারবেন না!'); return;
-             }
+             if (table.querySelector('thead tr').cells.length <= 2) { alert('আপনি শেষ পিরিয়ডটি মুছতে পারবেন না!'); return; }
              table.querySelectorAll('tr').forEach(row => row.deleteCell(-1));
         }
 
@@ -269,17 +266,23 @@
         const openDownloadModal = () => modal.classList.remove('hidden');
         const closeDownloadModal = () => modal.classList.add('hidden');
 
+        function forceDesktopView() {
+            const viewport = document.getElementById('viewport-meta');
+            if (viewport) viewport.setAttribute('content', 'width=1400');
+        }
+
+        function restoreMobileView() {
+            const viewport = document.getElementById('viewport-meta');
+            if (viewport) viewport.setAttribute('content', originalViewportContent);
+        }
+
         async function downloadAs(format) {
             const routineElement = document.getElementById('page-content');
-            const routineTable = document.getElementById('routineTable');
             document.getElementById('modal-options').classList.add('hidden');
             document.getElementById('modal-loader').classList.remove('hidden');
             
-            const originalMaxWidth = routineElement.style.maxWidth;
-            const originalWidth = routineElement.style.width;
-
-            routineElement.style.maxWidth = 'none';
-            routineElement.style.width = `${routineTable.scrollWidth + 2}px`;
+            forceDesktopView();
+            await new Promise(resolve => setTimeout(resolve, 100)); // Wait for reflow
 
             try {
                 const canvas = await html2canvas(routineElement, {
@@ -315,9 +318,7 @@
                 console.error('Download failed:', error);
                 alert('দুঃখিত, ফাইলটি ডাউনলোড করা সম্ভব হয়নি।');
             } finally {
-                routineElement.style.maxWidth = originalMaxWidth;
-                routineElement.style.width = originalWidth;
-                
+                restoreMobileView();
                 document.getElementById('modal-options').classList.remove('hidden');
                 document.getElementById('modal-loader').classList.add('hidden');
                 closeDownloadModal();
