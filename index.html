@@ -10,86 +10,57 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Dynamic Print Style -->
+    <!-- Libraries for Downloading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" xintegrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoVBL5gI9kLmbG0CsdC3EokL/mMyOA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" xintegrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
     <style id="print-style-sheet"></style>
     <style>
-        /* Corrected Font Declaration */
-        body {
-            font-family: 'Hind Siliguri', sans-serif;
+        body { font-family: 'Hind Siliguri', sans-serif; }
+        [contenteditable="true"], select {
+            cursor: pointer; padding: 4px 6px; margin: 0;
+            transition: background-color 0.3s, box-shadow 0.3s; border-radius: 4px;
         }
-        [contenteditable="true"] {
-            cursor: text;
-            padding: 4px 6px;
-            transition: background-color 0.3s, box-shadow 0.3s;
+        [contenteditable="true"]:hover, select:hover { background-color: #f7fafc; box-shadow: 0 0 0 1px #e2e8f0; }
+        [contenteditable="true"]:focus, select:focus { background-color: #f0f9ff; outline: 2px solid #3b82f6; box-shadow: none; }
+        select {
+            -webkit-appearance: none; -moz-appearance: none; appearance: none;
+            background-color: transparent; border: 1px solid #d1d5db;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center; background-repeat: no-repeat;
+            background-size: 1.25em 1.25em; padding-right: 2.5rem;
         }
-        [contenteditable="true"]:hover {
-            background-color: #f7fafc;
-            box-shadow: 0 0 0 1px #e2e8f0;
-        }
-        [contenteditable="true"]:focus {
-            background-color: #f0f9ff;
-            outline: 2px solid #3b82f6;
-        }
+        #teacherTable td { vertical-align: middle; }
+        #teacherTable select, #routineTable select { border: none; }
         
-        /* ROBUST PRINT STYLES FOR SINGLE PAGE FIT */
         @media print {
-            html, body {
-                height: 100%;
-                margin: 0;
-                padding: 0;
-                font-size: 9pt; /* Slightly reduced base font size */
-                line-height: 1.2;
-            }
+            html, body { height: 100%; margin: 0; padding: 0; font-size: 9pt; line-height: 1.2; }
             .no-print { display: none !important; }
             .page-container {
-                display: flex;
-                flex-direction: column;
-                height: 100%; /* Use full height of the print page */
-                padding: 0.5cm !important;
-                box-shadow: none !important;
-                border-radius: 0 !important;
+                display: flex; flex-direction: column; height: 100%;
+                padding: 0.5cm !important; box-shadow: none !important; border-radius: 0 !important;
                 box-sizing: border-box;
             }
-             .main-content {
-                flex-grow: 1; /* Key change: Pushes footer to the bottom */
-            }
-            header, section, footer {
-                margin: 0 !important;
-                padding: 0 !important;
-                flex-shrink: 0; /* Prevents containers from shrinking */
-            }
-            h1, h2, h3, h4, p {
-                margin: 0 0 2px 0 !important;
-                padding: 0 !important;
-            }
-            h1 { font-size: 15pt !important; }
-            h2 { font-size: 11pt !important; }
-            h3, h4 { font-size: 10pt !important; }
-            header { margin-bottom: 5px !important; }
-            section + section { margin-top: 5px !important; }
-            table, th, td {
-                border: 1px solid #000 !important;
-                padding: 1px 3px;
-                page-break-inside: avoid;
-            }
+            .main-content { flex-grow: 1; }
+            header, section, footer { margin: 0 !important; padding: 0 !important; flex-shrink: 0; }
+            h1 { font-size: 15pt !important; } h2 { font-size: 11pt !important; } h3, h4 { font-size: 10pt !important; }
+            header { margin-bottom: 5px !important; } section + section { margin-top: 5px !important; }
+            table, th, td { border: 1px solid #000 !important; padding: 1px 3px; page-break-inside: avoid; }
             a { text-decoration: none; color: inherit; }
-            [contenteditable="true"] {
-                 box-shadow: none !important;
-                 background-color: transparent !important;
+            [contenteditable="true"] { box-shadow: none !important; background-color: transparent !important; }
+            select {
+                border: none !important; background-color: transparent !important; padding: 1px; font-size: inherit; width: 100%;
+                background-image: none !important; padding-right: 4px;
             }
-            footer { 
-                margin-top: auto !important; 
-                padding-top: 4px !important; 
-                border-top: 1px solid #ccc !important;
-                font-size: 8pt;
-            }
+            .teacher-name-field { font-size: 7.5pt; color: #333; border-top: 1px dotted #ccc; margin-top: 2px; padding-top: 1px; }
+            footer { margin-top: auto !important; padding-top: 4px !important; border-top: 1px solid #ccc !important; font-size: 8pt; }
         }
+        .is-rendering .no-print { display: none !important; }
     </style>
 </head>
 <body class="bg-gray-100 p-4 sm:p-6 md:p-8">
 
-    <div class="max-w-7xl mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-lg page-container">
-        <!-- Header Section -->
+    <div id="page-content" class="max-w-7xl mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-lg page-container">
         <header class="text-center mb-6">
             <h1 contenteditable="true" class="text-3xl sm:text-4xl font-bold text-indigo-700">হাতিয়া কলেজ</h1>
             <h2 contenteditable="true" class="text-xl sm:text-2xl font-semibold text-gray-800 mt-2">ক্লাস রুটিন ও শিক্ষক পরিচিতি</h2>
@@ -100,234 +71,292 @@
             </p>
         </header>
 
-        <!-- Main Content Wrapper -->
         <div class="main-content">
-            <!-- Action Buttons -->
             <div class="flex flex-wrap justify-center gap-4 mb-6 no-print">
-                <button onclick="printDocument('portrait')" class="bg-teal-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-teal-700 transition duration-300 shadow-md flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-file-earmark-portrait-fill mr-2" viewBox="0 0 16 16"><path d="M10.065.88A.5.5 0 0 0 9.5 1v10.518a.5.5 0 0 0 .565.493l1.898-.633a.5.5 0 0 0 .337-.472V1.41a.5.5 0 0 0-.235-.429L10.065.88zM7 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-1.5 5.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5z"/><path d="M4.146.146A.5.5 0 0 1 4.5 0h7a.5.5 0 0 1 .5.5v15a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-15a.5.5 0 0 1 .146-.354zM7 4.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/></svg>
-                    Portrait প্রিন্ট
-                </button>
-                 <button onclick="printDocument('landscape')" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition duration-300 shadow-md flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-printer-fill mr-2" viewBox="0 0 16 16"><path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm5 8H6a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"/><path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/></svg>
-                    Landscape প্রিন্ট
-                </button>
+                 <button onclick="printDocument()" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition">প্রিন্ট করুন</button>
+                 <button onclick="openDownloadModal()" class="bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700 transition">ডাউনলোড</button>
             </div>
             
-            <!-- Class Routine Section -->
             <section>
+                <div class="flex justify-center items-center gap-4 my-4 no-print">
+                     <label for="routine-department-selector" class="text-lg font-medium text-gray-700">রুটিনের বিভাগ নির্বাচন করুন:</label>
+                     <select id="routine-department-selector" class="text-lg font-medium text-gray-800 p-2 rounded-lg">
+                         <option value="science">বিজ্ঞান</option>
+                         <option value="humanities">মানবিক</option>
+                         <option value="business">ব্যবসায় শিক্ষা</option>
+                     </select>
+                </div>
                 <h4 contenteditable="true" class="text-xl font-bold text-gray-800 mb-4 text-center">সাপ্তাহিক ক্লাস রুটিন</h4>
                 <div class="overflow-x-auto">
                     <table id="routineTable" class="w-full border-collapse border border-gray-400 text-center text-sm">
                         <thead class="bg-gray-200">
                             <tr>
-                                <th class="border border-gray-300 p-1 font-semibold align-top">বার</th>
-                                <th class="border border-gray-300 p-1 font-semibold"><span contenteditable="true">১ম পিরিয়ড</span><br><span contenteditable="true" class="font-normal text-xs">(১০:০০-১০:৪০)</span></th>
-                                <th class="border border-gray-300 p-1 font-semibold"><span contenteditable="true">২য় পিরিয়ড</span><br><span contenteditable="true" class="font-normal text-xs">(১০:৪০-১১:২০)</span></th>
-                                <th class="border border-gray-300 p-1 font-semibold"><span contenteditable="true">৩য় পিরিয়ড</span><br><span contenteditable="true" class="font-normal text-xs">(১১:২০-১২:০০)</span></th>
-                                <th class="border border-gray-300 p-1 font-semibold"><span contenteditable="true">৪র্থ পিরিয়ড</span><br><span contenteditable="true" class="font-normal text-xs">(১২:০০-১২:৪০)</span></th>
-                                <th class="border border-gray-300 p-1 font-semibold"><span contenteditable="true">৫ম পিরিয়ড</span><br><span contenteditable="true" class="font-normal text-xs">(১২:৪০-০১:২০)</span></th>
-                                <th class="border border-gray-300 p-1 font-semibold"><span contenteditable="true">৬ষ্ঠ পিরিয়ড</span><br><span contenteditable="true" class="font-normal text-xs">(০১:২০-০২:০০)</span></th>
-                                <th class="border border-gray-300 p-1 font-semibold"><span contenteditable="true">৭ম পিরিয়ড</span><br><span contenteditable="true" class="font-normal text-xs">(০২:০০-০২:৪০)</span></th>
+                                <th class="border p-1 font-semibold align-top">বার</th>
+                                <th class="border p-1 font-semibold"><span contenteditable="true">১ম পিরিয়ড</span><br><span contenteditable="true" class="font-normal text-xs">(১০:০০-১০:৪০)</span></th>
+                                <th class="border p-1 font-semibold"><span contenteditable="true">২য় পিরিয়ড</span><br><span contenteditable="true" class="font-normal text-xs">(১০:৪০-১১:২০)</span></th>
+                                <th class="border p-1 font-semibold"><span contenteditable="true">৩য় পিরিয়ড</span><br><span contenteditable="true" class="font-normal text-xs">(১১:২০-১২:০০)</span></th>
+                                <th class="border p-1 font-semibold"><span contenteditable="true">৪র্থ পিরিয়ড</span><br><span contenteditable="true" class="font-normal text-xs">(১২:০০-১২:৪০)</span></th>
+                                <th class="border p-1 font-semibold"><span contenteditable="true">৫ম পিরিয়ড</span><br><span contenteditable="true" class="font-normal text-xs">(১২:৪০-০১:২০)</span></th>
+                                <th class="border p-1 font-semibold"><span contenteditable="true">৬ষ্ঠ পিরিয়ড</span><br><span contenteditable="true" class="font-normal text-xs">(০১:২০-০২:০০)</span></th>
+                                <th class="border p-1 font-semibold"><span contenteditable="true">৭ম পিরিয়ড</span><br><span contenteditable="true" class="font-normal text-xs">(০২:০০-০২:৪০)</span></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td contenteditable="true" class="border border-gray-300 p-1 font-medium bg-gray-50">রবিবার</td>
-                                <td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td>
-                            </tr>
-                            <tr>
-                                <td contenteditable="true" class="border border-gray-300 p-1 font-medium bg-gray-50">সোমবার</td>
-                                <td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td>
-                            </tr>
-                            <tr>
-                                <td contenteditable="true" class="border border-gray-300 p-1 font-medium bg-gray-50">মঙ্গলবার</td>
-                                <td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td>
-                            </tr>
-                            <tr>
-                                <td contenteditable="true" class="border border-gray-300 p-1 font-medium bg-gray-50">বুধবার</td>
-                                <td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td>
-                            </tr>
-                            <tr>
-                                <td contenteditable="true" class="border border-gray-300 p-1 font-medium bg-gray-50"> বৃহস্পতিবার</td>
-                               <td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td>
-                            </tr>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
-                 <!-- Routine Table Action Buttons -->
                 <div class="mt-4 flex flex-wrap justify-center gap-4 no-print">
-                    <button onclick="addRow('routineTable')" class="bg-green-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-green-700 transition duration-300 shadow-sm">সারি যোগ</button>
-                    <button onclick="removeRow('routineTable')" class="bg-red-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-red-700 transition duration-300 shadow-sm">সারি মুছুন</button>
-                    <button onclick="addColumn('routineTable')" class="bg-yellow-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-yellow-600 transition duration-300 shadow-sm">কলাম যোগ</button>
-                     <button onclick="removeColumn('routineTable')" class="bg-red-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-red-700 transition duration-300 shadow-sm">কলাম মুছুন</button>
+                    <button onclick="addRow('routineTable')" class="bg-indigo-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-indigo-600 transition">সারি যোগ</button>
+                    <button onclick="removeRow('routineTable')" class="bg-red-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-red-600 transition">সারি মুছুন</button>
+                    <button onclick="addColumn('routineTable')" class="bg-yellow-500 text-gray-800 font-semibold py-2 px-5 rounded-lg hover:bg-yellow-600 transition">কলাম যোগ</button>
+                    <button onclick="removeColumn('routineTable')" class="bg-red-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-red-600 transition">কলাম মুছুন</button>
                 </div>
             </section>
     
-            <!-- Spacer -->
             <hr class="my-6 border-gray-300 no-print">
     
-            <!-- Teacher List Section -->
             <section>
                 <h4 contenteditable="true" class="text-xl font-bold text-gray-800 mb-4 text-center">শিক্ষকবৃন্দের নাম ও পরিচিতি</h4>
                  <div class="overflow-x-auto">
                     <table id="teacherTable" class="w-full border-collapse border border-gray-400 text-center text-sm">
                         <thead class="bg-gray-200">
                             <tr>
-                                <th class="border border-gray-300 p-1 font-semibold">ক্রমিক নং</th>
-                                <th contenteditable="true" class="border border-gray-300 p-1 font-semibold">শিক্ষকের নাম</th>
-                                <th contenteditable="true" class="border border-gray-300 p-1 font-semibold">পদবি</th>
-                                <th contenteditable="true" class="border border-gray-300 p-1 font-semibold">বিষয়</th>
+                                <th class="border p-1 font-semibold">ক্রমিক নং</th>
+                                <th contenteditable="true" class="border p-1 font-semibold">শিক্ষকের নাম</th>
+                                <th class="border p-1 font-semibold">পদবি</th>
+                                <th contenteditable="true" class="border p-1 font-semibold">বিষয়</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- 10 Teacher rows -->
-                            <tr><td contenteditable="true" class="border border-gray-300">১</td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td></tr>
-                            <tr><td contenteditable="true" class="border border-gray-300">২</td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td></tr>
-                            <tr><td contenteditable="true" class="border border-gray-300">৩</td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td></tr>
-                            <tr><td contenteditable="true" class="border border-gray-300">৪</td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td></tr>
-                            <tr><td contenteditable="true" class="border border-gray-300">৫</td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td></tr>
-                            <tr><td contenteditable="true" class="border border-gray-300">৬</td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td></tr>
-                            <tr><td contenteditable="true" class="border border-gray-300">৭</td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td></tr>
-                            <tr><td contenteditable="true" class="border border-gray-300">৮</td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td></tr>
-                            <tr><td contenteditable="true" class="border border-gray-300">৯</td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td></tr>
-                            <tr><td contenteditable="true" class="border border-gray-300">১০</td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td><td contenteditable="true" class="border border-gray-300"></td></tr>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
-                <!-- Teacher Table Action Button -->
                 <div class="mt-4 flex justify-center gap-4 no-print">
-                    <button onclick="addRow('teacherTable')" class="bg-green-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-green-700 transition duration-300 shadow-sm">শিক্ষক যোগ</button>
-                    <button onclick="removeRow('teacherTable')" class="bg-red-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-red-700 transition duration-300 shadow-sm">শিক্ষক মুছুন</button>
+                    <button onclick="addRow('teacherTable')" class="bg-indigo-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-indigo-600 transition">শিক্ষক যোগ</button>
+                    <button onclick="removeRow('teacherTable')" class="bg-red-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-red-600 transition">শিক্ষক মুছুন</button>
                 </div>
             </section>
-        </div> <!-- End Main Content Wrapper -->
+        </div>
 
         <footer class="text-center mt-6 pt-4 border-t border-gray-200">
              <p class="text-sm text-gray-700">Copyright &copy; <span id="year"></span> Tasfiqul Alam Pabel. All Rights Reserved.</p>
         </footer>
+    </div>
 
+    <div id="download-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl w-full max-w-sm text-center">
+            <div id="modal-options">
+                <h3 class="text-xl font-bold text-gray-800 mb-6">কোন ফরম্যাটে ডাউনলোড করবেন?</h3>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <button onclick="downloadAs('jpg')" class="bg-amber-500 text-white font-bold py-3 px-8 rounded-lg hover:bg-amber-600 transition">JPG</button>
+                    <button onclick="downloadAs('pdf')" class="bg-rose-500 text-white font-bold py-3 px-8 rounded-lg hover:bg-rose-600 transition">PDF</button>
+                </div>
+            </div>
+            <div id="modal-loader" class="hidden">
+                 <div class="flex justify-center items-center mb-4">
+                    <svg class="animate-spin -ml-1 mr-3 h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                  </div>
+                <p class="text-lg font-medium text-gray-700">আপনার ফাইল তৈরি করা হচ্ছে...</p>
+            </div>
+            <button onclick="closeDownloadModal()" class="mt-8 text-gray-500 hover:text-gray-700 font-medium">বাতিল</button>
+        </div>
     </div>
 
     <script>
-        document.getElementById('year').textContent = new Date().getFullYear();
+        const subjects = {
+            compulsory: ['বাংলা', 'ইংরেজি', 'তথ্য ও যোগাযোগ প্রযুক্তি'],
+            science: ['পদার্থবিজ্ঞান', 'রসায়ন', 'জীববিজ্ঞান', 'উচ্চতর গণিত', 'ব্যবহারিক'],
+            humanities: ['অর্থনীতি', 'যুক্তিবিদ্যা', 'সমাজবিজ্ঞান', 'সমাজকর্ম', 'ভূগোল', 'ইসলামের ইতিহাস ও সংস্কৃতি'],
+            business: ['ফিন্যান্স, ব্যাংকিং ও বিমা', 'ব্যবসায় সংগঠন ও ব্যবস্থাপনা', 'হিসাববিজ্ঞান', 'উৎপাদন ব্যবস্থাপনা ও বিপণন','পরিসংখ্যান']
+        };
+        const positions = ['পদবি নির্বাচন করুন','অধ্যক্ষ', 'সহকারী অধ্যাপক', 'প্রভাষক', 'ল্যাব এসিস্টেন্ট'];
+        const days = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার'];
+        const bengaliNumerals = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
 
-        // Update href attribute when website link is edited
-        document.getElementById('website-link').addEventListener('blur', function() {
-            let newUrl = this.innerText.trim();
-            // Prepend http:// if protocol is missing
-            if (newUrl && !/^https?:\/\//i.test(newUrl)) {
-                this.href = 'http://' + newUrl;
-            } else if (newUrl) {
-                this.href = newUrl;
-            }
+        const toBengaliNumber = (num) => String(num).split('').map(digit => bengaliNumerals[parseInt(digit)]).join('');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('year').textContent = new Date().getFullYear();
+            document.getElementById('website-link').addEventListener('blur', (e) => {
+                let url = e.target.innerText.trim();
+                e.target.href = (url && !/^https?:\/\//i.test(url)) ? 'http://' + url : url;
+            });
+            document.getElementById('routine-department-selector').addEventListener('change', updateAllSubjectDropdowns);
+            document.querySelector('#routineTable tbody').addEventListener('change', handleSubjectSelectionChange);
+            for (let i = 0; i < 10; i++) addRow('teacherTable');
+            days.forEach(day => addRow('routineTable', day));
+            updateAllSubjectDropdowns();
         });
 
-
-        // Function to set print orientation and trigger print
-        function printDocument(orientation) {
-            const styleSheet = document.getElementById('print-style-sheet');
-            let extraStyles = '';
-            
-            // Add specific styles for portrait mode to fit the wide routine table
-            if (orientation === 'portrait') {
-                extraStyles = `
-                    @media print {
-                        #routineTable { 
-                            font-size: 8pt; 
-                            line-height: 1.1;
-                        }
-                        #routineTable th, #routineTable td { 
-                            padding: 1px 2px;
-                        }
-                    }
-                `;
-            }
-
-            styleSheet.innerHTML = `
-                @page { 
-                    size: A4 ${orientation}; 
-                    margin: 0; 
-                }
-                ${extraStyles}
-            `;
+        function printDocument(orientation = 'landscape') {
+            document.getElementById('print-style-sheet').innerHTML = `@page { size: A4 ${orientation}; margin: 0; }`;
             window.print();
         }
 
-        // Function to add a new row
-        function addRow(tableId) {
-            const table = document.getElementById(tableId);
-            const tbody = table.getElementsByTagName('tbody')[0];
-            const newRow = tbody.insertRow(tbody.rows.length);
-            const columnCount = table.getElementsByTagName('thead')[0].rows[0].cells.length;
+        function addRow(tableId, dayName = '') {
+            const tbody = document.querySelector(`#${tableId} tbody`);
+            const newRow = tbody.insertRow();
+            if (tableId === 'teacherTable') createTeacherRow(newRow, tbody.rows.length);
+            else if (tableId === 'routineTable') createRoutineRow(newRow, dayName || 'নতুন দিন');
+        }
 
-            for (let i = 0; i < columnCount; i++) {
-                let newCell = newRow.insertCell(i);
-                newCell.classList.add('border', 'border-gray-300');
-                newCell.setAttribute('contenteditable', 'true');
-                
-                if (tableId === 'routineTable' && i === 0) {
-                     newCell.classList.add('p-1', 'font-medium', 'bg-gray-50');
-                     newCell.textContent = 'নতুন দিন';
-                } else if (tableId === 'teacherTable' && i === 0) {
-                    newCell.textContent = tbody.rows.length;
-                }
+        function createTeacherRow(row, rowIndex) {
+            row.innerHTML = `
+                <td class="border p-1">${toBengaliNumber(rowIndex)}</td>
+                <td class="border" contenteditable="true"></td>
+                <td class="border">
+                    <select class="w-full">${positions.map(p => `<option value="${p}">${p}</option>`).join('')}</select>
+                </td>
+                <td class="border" contenteditable="true"></td>`;
+        }
+
+        function createRoutineRow(row, dayName) {
+            const colCount = document.querySelector('#routineTable thead tr').cells.length;
+            row.insertCell().outerHTML = `<td class="border p-1 font-medium bg-gray-50" contenteditable="true">${dayName}</td>`;
+            for (let i = 1; i < colCount; i++) {
+                const cell = row.insertCell();
+                cell.className = 'border p-1 align-top';
+                cell.innerHTML = `
+                    <select class="subject-select w-full mb-1 text-xs"></select>
+                    <div class="teacher-name-field text-gray-600 text-xs" contenteditable="true">শিক্ষক</div>`;
             }
+        }
+
+        function updateAllSubjectDropdowns() {
+            document.querySelectorAll('#routineTable .subject-select').forEach(populateSubjectDropdown);
+            document.querySelectorAll('#routineTable tbody tr').forEach(updateRowSubjectOptions);
+        }
+
+        function populateSubjectDropdown(select) {
+            const department = document.getElementById('routine-department-selector').value;
+            const currentSubjects = [...subjects.compulsory, ...(subjects[department] || [])];
+            const selectedVal = select.value;
+            select.innerHTML = `<option value="">বিষয়...</option>` +
+                currentSubjects.map(s => `<option value="${s}" ${s === selectedVal ? 'selected' : ''}>${s}</option>`).join('');
         }
         
-        // Function to remove the last row
-        function removeRow(tableId) {
-            const table = document.getElementById(tableId);
-            const tbody = table.getElementsByTagName('tbody')[0];
-            if (tbody.rows.length > 1) { // Keep at least one row
-                tbody.deleteRow(-1);
-            } else {
-                alert('আপনি শেষ সারিটি মুছতে পারবেন না!');
+        function handleSubjectSelectionChange(event) {
+            if (event.target.classList.contains('subject-select')) {
+                const currentRow = event.target.closest('tr');
+                updateRowSubjectOptions(currentRow);
             }
         }
 
-        // Function to add a new column to the routine table
-        function addColumn(tableId) {
-            const table = document.getElementById(tableId);
-            if (tableId !== 'routineTable') return;
+        function updateRowSubjectOptions(row) {
+            const allSelectsInRow = row.querySelectorAll('.subject-select');
+            const selectionCounts = new Map();
 
-            const headerRow = table.querySelector('thead tr');
-            const newHeaderCell = document.createElement('th');
-            
-            const newPeriodNumber = headerRow.cells.length;
-            const periodString = newPeriodNumber.toLocaleString('bn-BD');
-            let suffix = "ম"; // Default
-            if ([2, 3].includes(newPeriodNumber)) suffix = "য়";
-            else if (newPeriodNumber === 4) suffix = "র্থ";
-            
-            newHeaderCell.innerHTML = `<span contenteditable="true">${periodString}${suffix} পিরিয়ড</span><br><span contenteditable="true" class="font-normal text-xs">(সময়)</span>`;
-            newHeaderCell.classList.add('border', 'border-gray-300', 'p-1', 'font-semibold');
-            headerRow.appendChild(newHeaderCell);
+            // Count selections for each subject in the row
+            allSelectsInRow.forEach(s => {
+                if (s.value) {
+                    selectionCounts.set(s.value, (selectionCounts.get(s.value) || 0) + 1);
+                }
+            });
 
-            table.querySelectorAll('tbody tr').forEach(row => {
-                const newCell = document.createElement('td');
-                newCell.setAttribute('contenteditable', 'true');
-                newCell.classList.add('border', 'border-gray-300');
-                row.appendChild(newCell);
+            // Apply the new disabling logic
+            allSelectsInRow.forEach(select => {
+                const currentSelection = select.value;
+                select.querySelectorAll('option').forEach(option => {
+                    if (!option.value) return; // Skip the "বিষয়..." option
+
+                    const count = selectionCounts.get(option.value) || 0;
+                    let isDisabled = false;
+
+                    if (option.value === 'ব্যবহারিক') {
+                        // Disable 'ব্যবহারিক' if it's selected 4 or more times,
+                        // but allow the current select element to keep its value.
+                        if (count >= 4 && option.value !== currentSelection) {
+                            isDisabled = true;
+                        }
+                    } else {
+                        // Disable other subjects if selected once,
+                        // but allow the current select element to keep its value.
+                        if (count >= 1 && option.value !== currentSelection) {
+                            isDisabled = true;
+                        }
+                    }
+                    option.disabled = isDisabled;
+                });
             });
         }
 
-        // Function to remove the last column from the routine table
-        function removeColumn(tableId) {
-             const table = document.getElementById(tableId);
-             if (tableId !== 'routineTable') return;
-             
-             const headerRow = table.querySelector('thead tr');
-             if(headerRow.cells.length <= 2) { 
-                alert('আপনি শেষ পিরিয়ডটি মুছতে পারবেন না!');
-                return;
-             }
 
-             table.querySelectorAll('tr').forEach(row => {
-                row.deleteCell(-1);
-             });
+        function removeRow(tableId) {
+            const tbody = document.querySelector(`#${tableId} tbody`);
+            if (tbody.rows.length > 1) tbody.deleteRow(-1);
+            else alert('আপনি শেষ সারিটি মুছতে পারবেন না!');
+        }
+
+        function addColumn(tableId) {
+            if (tableId !== 'routineTable') return;
+            const table = document.getElementById(tableId);
+            const headerRow = table.querySelector('thead tr');
+            const newPeriodNum = headerRow.cells.length;
+            headerRow.insertAdjacentHTML('beforeend', `<th class="border p-1 font-semibold"><span contenteditable="true">${toBengaliNumber(newPeriodNum)}ম পিরিয়ড</span><br><span contenteditable="true" class="font-normal text-xs">(সময়)</span></th>`);
+            
+            table.querySelectorAll('tbody tr').forEach(row => {
+                const cell = row.insertCell();
+                cell.className = 'border p-1 align-top';
+                cell.innerHTML = `<select class="subject-select w-full mb-1 text-xs"></select>
+                                  <div class="teacher-name-field text-gray-600 text-xs" contenteditable="true">শিক্ষক</div>`;
+                populateSubjectDropdown(cell.querySelector('select'));
+            });
+        }
+
+        function removeColumn(tableId) {
+             if (tableId !== 'routineTable') return;
+             const table = document.getElementById(tableId);
+             if (table.querySelector('thead tr').cells.length <= 2) {
+                 alert('আপনি শেষ পিরিয়ডটি মুছতে পারবেন না!'); return;
+             }
+             table.querySelectorAll('tr').forEach(row => row.deleteCell(-1));
+        }
+
+        const modal = document.getElementById('download-modal');
+        const openDownloadModal = () => modal.classList.remove('hidden');
+        const closeDownloadModal = () => modal.classList.add('hidden');
+
+        async function downloadAs(format) {
+            const routineElement = document.getElementById('page-content');
+            document.getElementById('modal-options').classList.add('hidden');
+            document.getElementById('modal-loader').classList.remove('hidden');
+            
+            try {
+                const canvas = await html2canvas(routineElement, {
+                    scale: 2.5, useCORS: true, logging: false,
+                    onclone: (doc) => {
+                        doc.querySelectorAll('select').forEach(sel => {
+                            const span = doc.createElement('span');
+                            span.style.padding = '4px 6px';
+                            span.textContent = sel.value;
+                            sel.parentNode.replaceChild(span, sel);
+                        });
+                    }
+                });
+                
+                const collegeName = routineElement.querySelector('h1').textContent.trim();
+                const departmentName = routineElement.querySelector('h3').textContent.trim();
+                const fileName = `${collegeName}-রুটিন-${departmentName}`;
+
+                if (format === 'jpg') {
+                    const link = document.createElement('a');
+                    link.download = `${fileName}.jpg`;
+                    link.href = canvas.toDataURL('image/jpeg', 0.9);
+                    link.click();
+                } else if (format === 'pdf') {
+                    const { jsPDF } = window.jspdf;
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [canvas.width, canvas.height] });
+                    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+                    pdf.save(`${fileName}.pdf`);
+                }
+            } catch (error) {
+                console.error('Download failed:', error);
+                alert('দুঃখিত, ফাইলটি ডাউনলোড করা সম্ভব হয়নি।');
+            } finally {
+                document.getElementById('modal-options').classList.remove('hidden');
+                document.getElementById('modal-loader').classList.add('hidden');
+                closeDownloadModal();
+            }
         }
     </script>
-
 </body>
 </html>
