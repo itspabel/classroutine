@@ -37,17 +37,19 @@
             html, body { height: 100%; margin: 0; padding: 0; font-size: 9pt; line-height: 1.2; }
             .no-print { display: none !important; }
             .page-container {
-                display: flex; flex-direction: column; height: 100%;
+                display: grid; /* Switched to Grid for robust layout */
+                grid-template-rows: auto 1fr auto; /* Header, Main (stretches), Footer */
+                height: 100vh; /* Full viewport height */
                 padding: 0.5cm !important; box-shadow: none !important; border-radius: 0 !important;
                 box-sizing: border-box;
             }
-            .main-content { flex-grow: 1; }
+            .main-content { overflow: hidden; } /* Prevent main content from overflowing */
             header, section, footer { margin: 0 !important; padding: 0 !important; flex-shrink: 0; }
             h1 { font-size: 15pt !important; } h2 { font-size: 11pt !important; } h3, h4 { font-size: 10pt !important; }
             header { margin-bottom: 5px !important; } section + section { margin-top: 5px !important; }
             table, th, td { 
                 border: 1px solid #000 !important; padding: 1px 3px; page-break-inside: avoid;
-                text-align: center; vertical-align: middle; /* <-- Fix for print alignment */
+                text-align: center; vertical-align: middle;
             }
             a { text-decoration: none; color: inherit; }
             [contenteditable="true"] { box-shadow: none !important; background-color: transparent !important; }
@@ -56,21 +58,23 @@
                 background-image: none !important; padding-right: 4px;
             }
             .teacher-name-field { font-size: 7.5pt; color: #333; border-top: 1px dotted #ccc; margin-top: 2px; padding-top: 1px; }
-            footer { margin-top: auto !important; padding-top: 4px !important; border-top: 1px solid #ccc !important; font-size: 8pt; }
+            footer { padding-top: 4px !important; border-top: 1px solid #ccc !important; font-size: 8pt; }
         }
     </style>
 </head>
 <body class="bg-gray-100 p-4 sm:p-6 md:p-8">
 
     <div id="page-content" class="max-w-7xl mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-lg page-container">
-        <header class="text-center mb-6">
-            <h1 contenteditable="true" class="text-3xl sm:text-4xl font-bold text-indigo-700">হাতিয়া কলেজ</h1>
-            <h2 contenteditable="true" class="text-xl sm:text-2xl font-semibold text-gray-800 mt-2">ক্লাস রুটিন ও শিক্ষক পরিচিতি</h2>
-            <h3 contenteditable="true" class="text-lg sm:text-xl font-medium text-gray-600 mt-1">বিজ্ঞান বিভাগ</h3>
-            <p class="text-md text-blue-600 mt-2">
-                <span contenteditable="true">ওয়েবসাইট: </span>
-                <a id="website-link" contenteditable="true" href="http://hdc.edu.bd" target="_blank" class="hover:underline">hdc.edu.bd</a>
-            </p>
+        <header>
+            <div class="text-center mb-6">
+                <h1 contenteditable="true" class="text-3xl sm:text-4xl font-bold text-indigo-700">হাতিয়া কলেজ</h1>
+                <h2 contenteditable="true" class="text-xl sm:text-2xl font-semibold text-gray-800 mt-2">ক্লাস রুটিন ও শিক্ষক পরিচিতি</h2>
+                <h3 contenteditable="true" class="text-lg sm:text-xl font-medium text-gray-600 mt-1">বিজ্ঞান বিভাগ</h3>
+                <p class="text-md text-blue-600 mt-2">
+                    <span contenteditable="true">ওয়েবসাইট: </span>
+                    <a id="website-link" contenteditable="true" href="http://hdc.edu.bd" target="_blank" class="hover:underline">hdc.edu.bd</a>
+                </p>
+            </div>
         </header>
 
         <div class="main-content">
@@ -138,8 +142,10 @@
             </section>
         </div>
 
-        <footer class="text-center mt-6 pt-4 border-t border-gray-200">
-             <p class="text-sm text-gray-700">Copyright &copy; <span id="year"></span> Tasfiqul Alam Pabel. All Rights Reserved.</p>
+        <footer>
+            <div class="text-center mt-6 pt-4 border-t border-gray-200">
+                 <p class="text-sm text-gray-700">Copyright &copy; <span id="year"></span> Tasfiqul Alam Pabel. All Rights Reserved.</p>
+            </div>
         </footer>
     </div>
 
@@ -165,11 +171,11 @@
     <script>
         const subjects = {
             compulsory: ['বাংলা', 'ইংরেজি', 'তথ্য ও যোগাযোগ প্রযুক্তি'],
-            science: ['পদার্থবিজ্ঞান', 'রসায়ন', 'জীববিজ্ঞান', 'উচ্চতর গণিত', 'ব্যবহারিক'],
+            science: ['পদার্থবিজ্ঞান', 'রসায়ন', 'জীববিজ্ঞান', 'উচ্চতর গণিত', 'পরিসংখ্যান', 'ব্যবহারিক'],
             humanities: ['অর্থনীতি', 'যুক্তিবিদ্যা', 'সমাজবিজ্ঞান', 'সমাজকর্ম', 'ভূগোল', 'ইসলামের ইতিহাস ও সংস্কৃতি'],
-            business: ['ফিন্যান্স, ব্যাংকিং ও বিমা', 'ব্যবসায় সংগঠন ও ব্যবস্থাপনা', 'হিসাববিজ্ঞান', 'উৎপাদন ব্যবস্থাপনা ও বিপণন', 'পরিসংখ্যান']
+            business: ['ফিন্যান্স, ব্যাংকিং ও বিমা', 'ব্যবসায় সংগঠন ও ব্যবস্থাপনা', 'হিসাববিজ্ঞান', 'উৎপাদন ব্যবস্থাপনা ও বিপণন']
         };
-        const positions = ['পদবি নির্বাচন করুন','অধ্যক্ষ', 'সহকারী অধ্যাপক', 'প্রভাষক', 'ল্যাব এসিস্টেন্ট'];
+        const positions = ['অধ্যক্ষ', 'সহকারী অধ্যাপক', 'প্রভাষক', 'ল্যাব এসিস্টেন্ট'];
         const days = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার'];
         const bengaliNumerals = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
 
@@ -201,13 +207,7 @@
         }
 
         function createTeacherRow(row, rowIndex) {
-            row.innerHTML = `
-                <td class="border p-1">${toBengaliNumber(rowIndex)}</td>
-                <td class="border" contenteditable="true"></td>
-                <td class="border">
-                    <select class="w-full">${positions.map(p => `<option value="${p}">${p}</option>`).join('')}</select>
-                </td>
-                <td class="border" contenteditable="true"></td>`;
+            row.innerHTML = `<td class="border p-1">${toBengaliNumber(rowIndex)}</td> <td class="border" contenteditable="true"></td> <td class="border"><select class="w-full">${positions.map(p => `<option value="${p}">${p}</option>`).join('')}</select></td> <td class="border" contenteditable="true"></td>`;
         }
 
         function createRoutineRow(row, dayName) {
@@ -216,9 +216,7 @@
             for (let i = 1; i < colCount; i++) {
                 const cell = row.insertCell();
                 cell.className = 'border p-1 align-top';
-                cell.innerHTML = `
-                    <select class="subject-select w-full mb-1 text-xs"></select>
-                    <div class="teacher-name-field text-gray-600 text-xs" contenteditable="true">শিক্ষক</div>`;
+                cell.innerHTML = `<select class="subject-select w-full mb-1 text-xs"></select> <div class="teacher-name-field text-gray-600 text-xs" contenteditable="true">শিক্ষক</div>`;
             }
         }
 
@@ -231,14 +229,12 @@
             const department = document.getElementById('routine-department-selector').value;
             const currentSubjects = [...subjects.compulsory, ...(subjects[department] || [])];
             const selectedVal = select.value;
-            select.innerHTML = `<option value="">বিষয়...</option>` +
-                currentSubjects.map(s => `<option value="${s}" ${s === selectedVal ? 'selected' : ''}>${s}</option>`).join('');
+            select.innerHTML = `<option value="">বিষয়...</option>` + currentSubjects.map(s => `<option value="${s}" ${s === selectedVal ? 'selected' : ''}>${s}</option>`).join('');
         }
         
         function handleSubjectSelectionChange(event) {
             if (event.target.classList.contains('subject-select')) {
-                const currentRow = event.target.closest('tr');
-                updateRowSubjectOptions(currentRow);
+                updateRowSubjectOptions(event.target.closest('tr'));
             }
         }
 
@@ -267,8 +263,7 @@
 
         function removeRow(tableId) {
             const tbody = document.querySelector(`#${tableId} tbody`);
-            if (tbody.rows.length > 1) tbody.deleteRow(-1);
-            else alert('আপনি শেষ সারিটি মুছতে পারবেন না!');
+            if (tbody.rows.length > 1) tbody.deleteRow(-1); else alert('আপনি শেষ সারিটি মুছতে পারবেন না!');
         }
 
         function addColumn(tableId) {
@@ -281,8 +276,7 @@
             table.querySelectorAll('tbody tr').forEach(row => {
                 const cell = row.insertCell();
                 cell.className = 'border p-1 align-top';
-                cell.innerHTML = `<select class="subject-select w-full mb-1 text-xs"></select>
-                                  <div class="teacher-name-field text-gray-600 text-xs" contenteditable="true">শিক্ষক</div>`;
+                cell.innerHTML = `<select class="subject-select w-full mb-1 text-xs"></select><div class="teacher-name-field text-gray-600 text-xs" contenteditable="true">শিক্ষক</div>`;
                 populateSubjectDropdown(cell.querySelector('select'));
             });
         }
@@ -302,16 +296,22 @@
 
         async function downloadAs(format) {
             const routineElement = document.getElementById('page-content');
+            const routineTable = document.getElementById('routineTable');
             document.getElementById('modal-options').classList.add('hidden');
             document.getElementById('modal-loader').classList.remove('hidden');
             
+            // --- FIX FOR MOBILE DOWNLOAD ---
+            const originalMaxWidth = routineElement.style.maxWidth;
+            routineElement.style.maxWidth = 'none'; // Temporarily remove max-width
+            routineElement.style.width = `${routineTable.scrollWidth}px`; // Expand to full table width
+
             try {
                 const canvas = await html2canvas(routineElement, {
                     scale: 2.5, useCORS: true, logging: false,
                     onclone: (doc) => {
-                        // **FIX: Hide all buttons and non-content elements before rendering**
+                        // Hide all non-printable elements in the clone
                         doc.querySelectorAll('.no-print').forEach(el => el.style.display = 'none');
-                        
+                        // Convert selects to simple text for capture
                         doc.querySelectorAll('select').forEach(sel => {
                             const span = doc.createElement('span');
                             span.style.padding = '4px 6px';
@@ -328,7 +328,7 @@
                 if (format === 'jpg') {
                     const link = document.createElement('a');
                     link.download = `${fileName}.jpg`;
-                    link.href = canvas.toDataURL('image/jpeg', 0.9);
+                    link.href = canvas.toDataURL('image/jpeg', 0.95);
                     link.click();
                 } else if (format === 'pdf') {
                     const { jsPDF } = window.jspdf;
@@ -341,6 +341,11 @@
                 console.error('Download failed:', error);
                 alert('দুঃখিত, ফাইলটি ডাউনলোড করা সম্ভব হয়নি।');
             } finally {
+                // --- Revert styles to normal ---
+                routineElement.style.maxWidth = originalMaxWidth;
+                routineElement.style.width = '';
+                
+                // Reset modal
                 document.getElementById('modal-options').classList.remove('hidden');
                 document.getElementById('modal-loader').classList.add('hidden');
                 closeDownloadModal();
