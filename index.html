@@ -32,23 +32,25 @@
         }
         #routineTable select { border: none; }
         
+        /* Using the user's preferred robust print style */
         @media print {
-            html, body { height: 100%; margin: 0; padding: 0; font-size: 9pt; line-height: 1.2; }
+            html, body { height: 100%; }
+            body {
+                -webkit-print-color-adjust: exact; print-color-adjust: exact;
+                font-size: 9.5pt; line-height: 1.2;
+            }
             .no-print { display: none !important; }
             .page-container {
-                display: grid; 
-                grid-template-rows: auto 1fr auto; 
-                height: 100vh;
-                padding: 0.5cm !important; box-shadow: none !important; border-radius: 0 !important;
-                box-sizing: border-box;
+                display: flex; flex-direction: column;
+                height: 100%;
+                padding: 0.6cm !important; box-shadow: none !important; border-radius: 0 !important;
             }
-            .main-content { overflow: hidden; }
+            .main-content { flex-grow: 1; }
             header, section, footer { margin: 0 !important; padding: 0 !important; }
-            h1 { font-size: 15pt !important; } h2 { font-size: 11pt !important; } h3, h4 { font-size: 10pt !important; }
-            header { margin-bottom: 8px !important; }
-            table, th, td { 
-                border: 1px solid #000 !important; padding: 2px 4px; page-break-inside: avoid;
-                text-align: center; vertical-align: middle;
+            h1 { font-size: 16pt !important; } h2 { font-size: 12pt !important; } h3, h4 { font-size: 11pt !important; }
+            header { margin-bottom: 8px !important; flex-shrink: 0; }
+            table, th, td {
+                border: 1px solid #000 !important; padding: 2px 4px; text-align: center; vertical-align: middle;
             }
             a { text-decoration: none; color: inherit; }
             [contenteditable="true"] { box-shadow: none !important; background-color: transparent !important; }
@@ -57,7 +59,10 @@
                 background-image: none !important; padding-right: 4px;
             }
             .teacher-name-field { font-size: 7.5pt; color: #333; border-top: 1px dotted #ccc; margin-top: 2px; padding-top: 1px; }
-            footer { padding-top: 5px !important; border-top: 1px solid #ccc !important; font-size: 8pt; }
+            footer {
+                flex-shrink: 0; margin-top: auto !important;
+                padding-top: 4px !important; border-top: 1px solid #ccc !important; font-size: 8pt;
+            }
         }
     </style>
 </head>
@@ -154,7 +159,7 @@
         const bengaliNumerals = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
 
         const toBengaliNumber = (num) => String(num).split('').map(digit => bengaliNumerals[parseInt(digit)]).join('');
-
+        
         let originalViewportContent = '';
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -218,7 +223,9 @@
         function updateRowSubjectOptions(row) {
             const allSelectsInRow = row.querySelectorAll('.subject-select');
             const selectionCounts = new Map();
-            allSelectsInRow.forEach(s => { if (s.value) selectionCounts.set(s.value, (selectionCounts.get(s.value) || 0) + 1); });
+            allSelectsInRow.forEach(s => {
+                if (s.value) selectionCounts.set(s.value, (selectionCounts.get(s.value) || 0) + 1);
+            });
             allSelectsInRow.forEach(select => {
                 const currentSelection = select.value;
                 select.querySelectorAll('option').forEach(option => {
@@ -267,13 +274,11 @@
         const closeDownloadModal = () => modal.classList.add('hidden');
 
         function forceDesktopView() {
-            const viewport = document.getElementById('viewport-meta');
-            if (viewport) viewport.setAttribute('content', 'width=1400');
+            document.getElementById('viewport-meta').setAttribute('content', 'width=1400');
         }
 
         function restoreMobileView() {
-            const viewport = document.getElementById('viewport-meta');
-            if (viewport) viewport.setAttribute('content', originalViewportContent);
+            document.getElementById('viewport-meta').setAttribute('content', originalViewportContent);
         }
 
         async function downloadAs(format) {
@@ -282,7 +287,7 @@
             document.getElementById('modal-loader').classList.remove('hidden');
             
             forceDesktopView();
-            await new Promise(resolve => setTimeout(resolve, 100)); // Wait for reflow
+            await new Promise(resolve => setTimeout(resolve, 100));
 
             try {
                 const canvas = await html2canvas(routineElement, {
