@@ -45,7 +45,10 @@
             header, section, footer { margin: 0 !important; padding: 0 !important; flex-shrink: 0; }
             h1 { font-size: 15pt !important; } h2 { font-size: 11pt !important; } h3, h4 { font-size: 10pt !important; }
             header { margin-bottom: 5px !important; } section + section { margin-top: 5px !important; }
-            table, th, td { border: 1px solid #000 !important; padding: 1px 3px; page-break-inside: avoid; }
+            table, th, td { 
+                border: 1px solid #000 !important; padding: 1px 3px; page-break-inside: avoid;
+                text-align: center; vertical-align: middle; /* <-- Fix for print alignment */
+            }
             a { text-decoration: none; color: inherit; }
             [contenteditable="true"] { box-shadow: none !important; background-color: transparent !important; }
             select {
@@ -55,7 +58,6 @@
             .teacher-name-field { font-size: 7.5pt; color: #333; border-top: 1px dotted #ccc; margin-top: 2px; padding-top: 1px; }
             footer { margin-top: auto !important; padding-top: 4px !important; border-top: 1px solid #ccc !important; font-size: 8pt; }
         }
-        .is-rendering .no-print { display: none !important; }
     </style>
 </head>
 <body class="bg-gray-100 p-4 sm:p-6 md:p-8">
@@ -165,7 +167,7 @@
             compulsory: ['বাংলা', 'ইংরেজি', 'তথ্য ও যোগাযোগ প্রযুক্তি'],
             science: ['পদার্থবিজ্ঞান', 'রসায়ন', 'জীববিজ্ঞান', 'উচ্চতর গণিত', 'ব্যবহারিক'],
             humanities: ['অর্থনীতি', 'যুক্তিবিদ্যা', 'সমাজবিজ্ঞান', 'সমাজকর্ম', 'ভূগোল', 'ইসলামের ইতিহাস ও সংস্কৃতি'],
-            business: ['ফিন্যান্স, ব্যাংকিং ও বিমা', 'ব্যবসায় সংগঠন ও ব্যবস্থাপনা', 'হিসাববিজ্ঞান', 'উৎপাদন ব্যবস্থাপনা ও বিপণন','পরিসংখ্যান']
+            business: ['ফিন্যান্স, ব্যাংকিং ও বিমা', 'ব্যবসায় সংগঠন ও ব্যবস্থাপনা', 'হিসাববিজ্ঞান', 'উৎপাদন ব্যবস্থাপনা ও বিপণন', 'পরিসংখ্যান']
         };
         const positions = ['পদবি নির্বাচন করুন','অধ্যক্ষ', 'সহকারী অধ্যাপক', 'প্রভাষক', 'ল্যাব এসিস্টেন্ট'];
         const days = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার'];
@@ -243,41 +245,25 @@
         function updateRowSubjectOptions(row) {
             const allSelectsInRow = row.querySelectorAll('.subject-select');
             const selectionCounts = new Map();
-
-            // Count selections for each subject in the row
             allSelectsInRow.forEach(s => {
-                if (s.value) {
-                    selectionCounts.set(s.value, (selectionCounts.get(s.value) || 0) + 1);
-                }
+                if (s.value) selectionCounts.set(s.value, (selectionCounts.get(s.value) || 0) + 1);
             });
 
-            // Apply the new disabling logic
             allSelectsInRow.forEach(select => {
                 const currentSelection = select.value;
                 select.querySelectorAll('option').forEach(option => {
-                    if (!option.value) return; // Skip the "বিষয়..." option
-
+                    if (!option.value) return;
                     const count = selectionCounts.get(option.value) || 0;
                     let isDisabled = false;
-
                     if (option.value === 'ব্যবহারিক') {
-                        // Disable 'ব্যবহারিক' if it's selected 4 or more times,
-                        // but allow the current select element to keep its value.
-                        if (count >= 4 && option.value !== currentSelection) {
-                            isDisabled = true;
-                        }
+                        if (count >= 4 && option.value !== currentSelection) isDisabled = true;
                     } else {
-                        // Disable other subjects if selected once,
-                        // but allow the current select element to keep its value.
-                        if (count >= 1 && option.value !== currentSelection) {
-                            isDisabled = true;
-                        }
+                        if (count >= 1 && option.value !== currentSelection) isDisabled = true;
                     }
                     option.disabled = isDisabled;
                 });
             });
         }
-
 
         function removeRow(tableId) {
             const tbody = document.querySelector(`#${tableId} tbody`);
@@ -323,6 +309,9 @@
                 const canvas = await html2canvas(routineElement, {
                     scale: 2.5, useCORS: true, logging: false,
                     onclone: (doc) => {
+                        // **FIX: Hide all buttons and non-content elements before rendering**
+                        doc.querySelectorAll('.no-print').forEach(el => el.style.display = 'none');
+                        
                         doc.querySelectorAll('select').forEach(sel => {
                             const span = doc.createElement('span');
                             span.style.padding = '4px 6px';
